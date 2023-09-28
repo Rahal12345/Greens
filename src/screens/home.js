@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Icon } from "react-native-elements";
+import { Icon} from "react-native-elements";
 
 import {
   Text,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     position: "absolute",
-    top: 120,
+    top: 100,
     left: 0,
     right: 0,
     bottom: 0,
@@ -162,23 +162,23 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: "#0c913a",
     textAlign: "center",
-    fontWeight: "500",
+    fontWeight: "800",
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
-    top: 50,
+    top: 30,
     left: 0,
     right: 0,
     bottom: 0,
   },
   addPlant: {
     position: "absolute",
-    top: 165,
+    top: 150,
     left: 0,
     right: 0,
     bottom: 0,
   },
-  scrollView: { marginTop: 220 },
+  scrollView: { marginTop: 200 },
 });
 
 export default withNavigationFocus(Home);

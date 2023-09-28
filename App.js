@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, AsyncStorage } from "react-native";
+import { View, AsyncStorage, StatusBar } from "react-native";
 import { Icon } from "react-native-elements";
 import { createStackNavigator } from "react-navigation-stack";
 import { createAppContainer } from "react-navigation";
@@ -43,4 +43,13 @@ const MainNavigator = createStackNavigator(
 
 const App = createAppContainer(MainNavigator);
 
-export default App;
+const AppContainer = () => {
+  return (
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <App />
+    </>
+  );
+};
+
+export default AppContainer;

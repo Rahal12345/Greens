@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import { Icon } from "react-native-elements";
 
 import { Button } from "react-native-paper";
 import { database } from "../../firebase";
@@ -49,7 +50,18 @@ const PlantForm = ({ navigation }) => {
           style={styles.backgroundImage}
           imageStyle={styles.watermark}
         >
-          <Text style={styles.heading}>View Plant</Text>
+          <Text style={styles.heading}>View Plant</Text>{" "}
+          <TouchableOpacity
+            style={styles.back}
+            onPress={() => navigation.navigate("HomeScreen")}
+          >
+            <Icon
+              name="reply"
+              size={30}
+              color="#FFFFFF"
+              style={styles.backIcon}
+            />
+          </TouchableOpacity>
           <ScrollView style={styles.formContainer}>
             {formData.imageLink && (
               <Image
@@ -191,14 +203,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
-    top: 50,
+    top: 30,
     left: 0,
     right: 0,
     bottom: 0,
   },
   formContainer: {
     position: "absolute",
-    top: 120,
+    top: 100,
     left: 0,
     right: 0,
     bottom: 0,
@@ -207,6 +219,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#b5160b",
     color: "#fff",
     fontSize: 18,
+  },
+  back: {
+    position: "absolute",
+    top: 35,
+    left: 10,
+    bottom: 0,
+  },
+  backIcon: {
+    marginTop: 4,
+    padding: 2,
+    backgroundColor: "#0c913a",
+    borderRadius: 96,
   },
 });
 

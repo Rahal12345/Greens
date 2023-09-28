@@ -21,6 +21,8 @@ import { database } from "../../firebase";
 import { ref, push } from "firebase/database";
 
 import { uploadToFirebase, uriToBlob } from "../services/ImageService";
+import { Icon } from "react-native-elements";
+import { TouchableOpacity } from "react-native";
 
 const PlantForm = ({ navigation }) => {
   const [formData, setFormData] = useState({
@@ -87,6 +89,17 @@ const PlantForm = ({ navigation }) => {
           imageStyle={styles.watermark}
         >
           <Text style={styles.heading}>Add Plant</Text>
+          <TouchableOpacity
+            style={styles.back}
+            onPress={() => navigation.navigate("HomeScreen")}
+          >
+            <Icon
+              name="reply"
+              size={30}
+              color="#FFFFFF"
+              style={styles.backIcon}
+            />
+          </TouchableOpacity>
           <ScrollView style={styles.formContainer}>
             <Text style={styles.label}>Plant Name</Text>
             <TextInput
@@ -254,14 +267,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     justifyContent: "center",
     alignItems: "center",
-    top: 50,
+    top: 30,
     left: 0,
     right: 0,
     bottom: 0,
   },
   formContainer: {
     position: "absolute",
-    top: 120,
+    top: 100,
     left: 0,
     right: 0,
     bottom: 0,
@@ -270,6 +283,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#0c913a",
     color: "#fff",
     fontSize: 18,
+  },
+  back: {
+    position: "absolute",
+    top: 35,
+    left: 10,
+    bottom: 0,
+  },
+  backIcon: {
+    marginTop: 4,
+    padding: 2,
+    backgroundColor: "#0c913a",
+    borderRadius: 96,
   },
 });
 
