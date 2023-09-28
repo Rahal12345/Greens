@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Icon} from "react-native-elements";
+import { Icon } from "react-native-elements";
 
 import {
   Text,
@@ -25,6 +25,14 @@ function Home({ navigation, isFocused }) {
   useEffect(() => {
     searchPlants();
   }, [isFocused]);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      console.log("Home screen focused - Refreshing");
+    });
+
+    // Clean up the listener when the component is unmounted
+    return unsubscribe;
+  }, [navigation]);
   const searchPlants = async () => {
     await get(ref(database, "/plants"))
       .then((snapshot) => {
@@ -37,7 +45,11 @@ function Home({ navigation, isFocused }) {
                   id: ID,
                   ...data[ID],
                 }))
-                .filter((plant) => plant.plantName.includes(searchQuery))
+                .filter((plant) =>
+                  plant.plantName
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+                )
             );
           else
             setPlantsData(
@@ -84,7 +96,10 @@ function Home({ navigation, isFocused }) {
               text="Add Plant"
               icon="plus"
               type="antdesign"
-              onPress={() => navigation.navigate("AddPlantScreen")}
+              onPress={() => {
+                setSearchQuery("");
+                navigation.navigate("AddPlantScreen");
+              }}
             />
           </View>
           <View style={styles.scrollView}>
@@ -97,9 +112,10 @@ function Home({ navigation, isFocused }) {
                   plantName={item.plantName}
                   botanicalName={item.botanicalName}
                   imageSource={item.imageLink}
-                  onPress={() =>
-                    navigation.navigate("ViewPlantScreen", { plant: item })
-                  }
+                  onPress={() => {
+                    setSearchQuery("");
+                    navigation.navigate("ViewPlantScreen", { plant: item });
+                  }}
                 />
               )}
               keyExtractor={(item) => item.id}
