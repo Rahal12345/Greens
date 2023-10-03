@@ -19,6 +19,7 @@ import { showMessage } from "react-native-flash-message";
 import FlashMessage from "react-native-flash-message";
 
 import DeleteConfirmationModal from "../components/confirmationModal";
+import { FlatList } from "react-native";
 
 const PlantForm = ({ navigation }) => {
   const [formData, setFormData] = useState(navigation.getParam("plant"));
@@ -50,7 +51,7 @@ const PlantForm = ({ navigation }) => {
           style={styles.backgroundImage}
           imageStyle={styles.watermark}
         >
-          <Text style={styles.heading}>View Plant</Text>{" "}
+          <Text style={styles.heading}>View Plant</Text>
           <TouchableOpacity
             style={styles.back}
             onPress={() => navigation.navigate("HomeScreen")}
@@ -128,6 +129,38 @@ const PlantForm = ({ navigation }) => {
               style={styles.input}
               placeholder="Agronomic Practices"
               value={formData.agronomicPractices}
+            />
+            <View style={styles.tableRow}>
+              <View style={{ ...styles.tableRow, width: "50%" }}>
+                <Text style={{ ...styles.label, width: "100%" }}>
+                  Pest & Desease
+                </Text>
+              </View>
+              <View style={{ ...styles.tableRow, width: "50%" }}>
+                <Text
+                  style={{ ...styles.label, width: "100%", textAlign: "right" }}
+                >
+                  Organic Pesticide
+                </Text>
+              </View>
+            </View>
+            <FlatList
+              data={formData.pestTable}
+              renderItem={({ item, index }) => (
+                <View style={styles.tableRow}>
+                  <TextInput
+                    style={{ ...styles.tableInput, marginRight: 10 }}
+                    placeholder="Enter here"
+                    value={item.desease}
+                  />
+                  <TextInput
+                    style={styles.tableInput}
+                    placeholder="Enter here"
+                    value={item.pesticide}
+                  />
+                </View>
+              )}
+              keyExtractor={(item, index) => index}
             />
             <TouchableOpacity
               onPress={() => {
@@ -231,6 +264,21 @@ const styles = StyleSheet.create({
     padding: 2,
     backgroundColor: "#0c913a",
     borderRadius: 96,
+  },
+  tableContainer: {
+    marginTop: 20,
+  },
+  tableRow: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  tableInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+    padding: 8,
+    marginRight: 0,
   },
 });
 

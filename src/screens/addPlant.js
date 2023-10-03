@@ -23,6 +23,7 @@ import { ref, push } from "firebase/database";
 import { uploadToFirebase, uriToBlob } from "../services/ImageService";
 import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native";
+import { FlatList } from "react-native";
 
 const PlantForm = ({ navigation }) => {
   const [formData, setFormData] = useState({
@@ -38,15 +39,34 @@ const PlantForm = ({ navigation }) => {
     soilDepth: "",
     agronomicPractices: "",
   });
+  const [pestTableData, setPestTableData] = useState([]);
   const [modalShow, setModalShow] = useState(false);
 
+  const addTableRow = () => {
+    setPestTableData((prevData) => [
+      ...prevData,
+      { desease: "", pesticide: "" },
+    ]);
+  };
+  const removeTableRow = () => {
+    const updatedTableData = [...pestTableData.slice(0, -1)];
+    setPestTableData(updatedTableData);
+  };
   const handleChange = (field, value) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [field]: value,
     }));
   };
-
+  const handleTableChange = (index, field, value) => {
+    const updatedData = pestTableData.map((row, i) => {
+      if (i === index) {
+        return { ...row, [field]: value };
+      }
+      return row;
+    });
+    setPestTableData(updatedData);
+  };
   const addPlant = async () => {
     showMessage({
       message: "Plant Added Successfully!",
@@ -60,7 +80,11 @@ const PlantForm = ({ navigation }) => {
 
     await uriToBlob(formData.imageLink).then((blob) => {
       uploadToFirebase(blob, id).then((link) => {
-        push(ref(database, "/plants"), { ...formData, imageLink: link })
+        push(ref(database, "/plants"), {
+          ...formData,
+          imageLink: link,
+          pestTable: pestTableData,
+        })
           .then(() => {
             showMessage({
               message: "Plant Added Successfully!",
@@ -173,13 +197,76 @@ const PlantForm = ({ navigation }) => {
                 handleChange("agronomicPractices", value)
               }
             />
+            <View style={styles.tableRow}>
+              <View style={{ ...styles.tableRow, width: "50%" }}>
+                <Text style={{ ...styles.label, width: "86%" }}>
+                  Pest & Desease
+                </Text>
+                <TouchableOpacity
+                  onPress={addTableRow}
+                  style={{ width: "14%" }}
+                >
+                  <Icon
+                    name="add"
+                    size={20}
+                    color="#FFFFFF"
+                    style={styles.backIcon}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{ ...styles.tableRow, width: "50%" }}>
+                {pestTableData.length > 0 && (
+                  <TouchableOpacity
+                    onPress={removeTableRow}
+                    style={{ width: "14%" }}
+                  >
+                    <Icon
+                      name="remove"
+                      size={20}
+                      color="#FFFFFF"
+                      style={{ ...styles.backIcon, backgroundColor: "#b5160b" }}
+                    />
+                  </TouchableOpacity>
+                )}
+                <Text
+                  style={{ ...styles.label, width: "86%", textAlign: "right" }}
+                >
+                  Organic Pesticide
+                </Text>
+              </View>
+            </View>
+
+            <FlatList
+              data={pestTableData}
+              renderItem={({ item, index }) => (
+                <View style={styles.tableRow}>
+                  <TextInput
+                    style={{ ...styles.tableInput, marginRight: 10 }}
+                    placeholder="Enter here"
+                    value={item.desease}
+                    onChangeText={(value) =>
+                      handleTableChange(index, "desease", value)
+                    }
+                  />
+                  <TextInput
+                    style={styles.tableInput}
+                    placeholder="Enter here"
+                    value={item.pesticide}
+                    onChangeText={(value) =>
+                      handleTableChange(index, "pesticide", value)
+                    }
+                  />
+                </View>
+              )}
+              keyExtractor={(item, index) => index}
+            />
             {formData.imageLink && (
               <Image
                 style={styles.image}
                 source={{ uri: formData.imageLink }}
               />
             )}
-
+            
             <Button
               icon={"upload"}
               mode="contained"
@@ -295,6 +382,21 @@ const styles = StyleSheet.create({
     padding: 2,
     backgroundColor: "#0c913a",
     borderRadius: 96,
+  },
+  tableContainer: {
+    marginTop: 20,
+  },
+  tableRow: {
+    flexDirection: "row",
+    marginBottom: 10,
+  },
+  tableInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+    padding: 8,
+    marginRight: 0,
   },
 });
 
