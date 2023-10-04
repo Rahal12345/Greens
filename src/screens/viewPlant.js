@@ -34,7 +34,7 @@ const PlantForm = ({ navigation }) => {
           backgroundColor: styles.alertSuccess.backgroundColor,
           color: styles.alertSuccess.color,
           fontSize: styles.alertSuccess.fontSize,
-          duration: 3000,
+          duration: 2000,
         });
         navigation.navigate("HomeScreen");
       })
