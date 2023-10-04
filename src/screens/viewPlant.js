@@ -147,16 +147,22 @@ const PlantForm = ({ navigation }) => {
             <FlatList
               data={formData.pestTable}
               renderItem={({ item, index }) => (
-                <View style={styles.tableRow}>
-                  <TextInput
-                    style={{ ...styles.tableInput, marginRight: 10 }}
-                    placeholder="Enter here"
-                    value={item.desease}
-                  />
-                  <TextInput
-                    style={styles.tableInput}
-                    placeholder="Enter here"
-                    value={item.pesticide}
+                <View>
+                  <View style={styles.tableRow}>
+                    <TextInput
+                      style={{ ...styles.tableInput, marginRight: 10 }}
+                      placeholder="Enter here"
+                      value={item.desease}
+                    />
+                    <TextInput
+                      style={styles.tableInput}
+                      placeholder="Enter here"
+                      value={item.pesticide}
+                    />
+                  </View>
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.imageLink }}
                   />
                 </View>
               )}

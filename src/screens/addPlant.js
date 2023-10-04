@@ -40,12 +40,16 @@ const PlantForm = ({ navigation }) => {
     agronomicPractices: "",
   });
   const [pestTableData, setPestTableData] = useState([]);
-  const [modalShow, setModalShow] = useState(false);
 
+  const [modalShow, setModalShow] = useState(false);
+  const [pestModalShow, setPestModalShow] = useState(false);
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isUploading, setisUploading] = useState(false);
   const addTableRow = () => {
     setPestTableData((prevData) => [
       ...prevData,
-      { desease: "", pesticide: "" },
+      { desease: "", pesticide: "", imageLink: "" },
     ]);
   };
   const removeTableRow = () => {
@@ -68,16 +72,18 @@ const PlantForm = ({ navigation }) => {
     setPestTableData(updatedData);
   };
   const addPlant = async () => {
-    showMessage({
-      message: "Plant Added Successfully!",
-      type: "success",
-      backgroundColor: styles.alertSuccess.backgroundColor,
-      color: styles.alertSuccess.color,
-      fontSize: styles.alertSuccess.fontSize,
-      duration: 3000,
-    });
+    setisUploading(true);
+    //uploading pest images
+    await Promise.all(
+      pestTableData.map(async (row, index) => {
+        const id = uuid.v4();
+        const blob = await uriToBlob(row.imageLink);
+        const link = await uploadToFirebase(blob, id);
+        row.imageLink = link;
+      })
+    );
+    // uploading main image and all details
     const id = uuid.v4();
-
     await uriToBlob(formData.imageLink).then((blob) => {
       uploadToFirebase(blob, id).then((link) => {
         push(ref(database, "/plants"), {
@@ -86,15 +92,18 @@ const PlantForm = ({ navigation }) => {
           pestTable: pestTableData,
         })
           .then(() => {
+            setisUploading(false);
             showMessage({
               message: "Plant Added Successfully!",
               type: "success",
               backgroundColor: styles.alertSuccess.backgroundColor,
               color: styles.alertSuccess.color,
               fontSize: styles.alertSuccess.fontSize,
-              duration: 3000,
+              duration: 2000,
             });
-            navigation.navigate("HomeScreen");
+            setTimeout(() => {
+              navigation.navigate("HomeScreen");
+            }, 2000);
           })
           .catch((err) => {
             console.error(err);
@@ -239,34 +248,57 @@ const PlantForm = ({ navigation }) => {
             <FlatList
               data={pestTableData}
               renderItem={({ item, index }) => (
-                <View style={styles.tableRow}>
-                  <TextInput
-                    style={{ ...styles.tableInput, marginRight: 10 }}
-                    placeholder="Enter here"
-                    value={item.desease}
-                    onChangeText={(value) =>
-                      handleTableChange(index, "desease", value)
-                    }
-                  />
-                  <TextInput
-                    style={styles.tableInput}
-                    placeholder="Enter here"
-                    value={item.pesticide}
-                    onChangeText={(value) =>
-                      handleTableChange(index, "pesticide", value)
-                    }
-                  />
+                <View>
+                  <View style={styles.tableRow}>
+                    <TextInput
+                      style={{ ...styles.tableInput, marginRight: 10 }}
+                      placeholder="Enter here"
+                      value={item.desease}
+                      onChangeText={(value) =>
+                        handleTableChange(index, "desease", value)
+                      }
+                    />
+                    <TextInput
+                      style={styles.tableInput}
+                      placeholder="Enter here"
+                      value={item.pesticide}
+                      onChangeText={(value) =>
+                        handleTableChange(index, "pesticide", value)
+                      }
+                    />
+                  </View>
+                  {item.imageLink ? (
+                    <Image
+                      style={{ ...styles.image, width: "50%", height: 100 }}
+                      source={{ uri: item.imageLink }}
+                      resizeMode="stretch"
+                    />
+                  ) : (
+                    <Button
+                      icon={"upload"}
+                      mode="contained"
+                      style={{ marginBottom: 20, width: "50%" }}
+                      buttonColor={"#583316"}
+                      onPress={() => {
+                        setPestModalShow(true);
+                        setCurrentImageIndex(index);
+                      }}
+                    >
+                      Upload image
+                    </Button>
+                  )}
                 </View>
               )}
               keyExtractor={(item, index) => index}
             />
+            <View style={formData.imageLink && styles.line}></View>
             {formData.imageLink && (
               <Image
                 style={styles.image}
                 source={{ uri: formData.imageLink }}
               />
             )}
-            
+
             <Button
               icon={"upload"}
               mode="contained"
@@ -276,14 +308,15 @@ const PlantForm = ({ navigation }) => {
             >
               Upload Plant Image
             </Button>
-            <View>
-              <ButtonComponent
-                text="Submit"
-                icon="upload"
-                type="antdesign"
-                onPress={addPlant}
-              />
-            </View>
+            <Button
+              icon={"upload"}
+              mode="contained"
+              style={{ marginBottom: 20 }}
+              buttonColor={isUploading ? "#423d3d" : "#0c913a"}
+              onPress={addPlant}
+            >
+              {isUploading ? "Submitting" : "Submit All"}
+            </Button>
             <ImageGallary
               modal={modalShow}
               closeModal={() => {
@@ -292,6 +325,15 @@ const PlantForm = ({ navigation }) => {
               image={formData.imageLink}
               setImage={(val) => {
                 handleChange("imageLink", val);
+              }}
+            />
+            <ImageGallary
+              modal={pestModalShow}
+              closeModal={() => {
+                setPestModalShow(false);
+              }}
+              setImage={(val) => {
+                handleTableChange(currentImageIndex, "imageLink", val);
               }}
             />
           </ScrollView>
@@ -397,6 +439,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 8,
     marginRight: 0,
+  },
+  line: {
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
+    marginVertical: 4,
   },
 });
 
