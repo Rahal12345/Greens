@@ -112,11 +112,11 @@ const PlantForm = ({ navigation }) => {
               placeholder="Spaces Between Raws"
               value={formData.spacesBetweenRaws}
             />
-            <Text style={styles.label}>Pit Size</Text>
+            <Text style={styles.label}>Seed Rate</Text>
             <TextInput
               style={styles.input}
-              placeholder="Pit Size"
-              value={formData.pitSize}
+              placeholder="Seed Rate"
+              value={formData.seedRate}
             />
             <Text style={styles.label}>Soil Depth</Text>
             <TextInput

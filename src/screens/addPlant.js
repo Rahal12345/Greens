@@ -35,7 +35,7 @@ const PlantForm = ({ navigation }) => {
     soilType: "",
     spacesWithinRaws: "",
     spacesBetweenRaws: "",
-    pitSize: "",
+    seedRate: "",
     soilDepth: "",
     agronomicPractices: "",
   });
@@ -183,12 +183,12 @@ const PlantForm = ({ navigation }) => {
               value={formData.spacesBetweenRaws}
               onChangeText={(value) => handleChange("spacesBetweenRaws", value)}
             />
-            <Text style={styles.label}>Pit Size</Text>
+            <Text style={styles.label}>Seed Rate</Text>
             <TextInput
               style={styles.input}
-              placeholder="Pit Size"
-              value={formData.pitSize}
-              onChangeText={(value) => handleChange("pitSize", value)}
+              placeholder="Seed Rate"
+              value={formData.seedRate}
+              onChangeText={(value) => handleChange("seedRate", value)}
             />
             <Text style={styles.label}>Soil Depth</Text>
             <TextInput
