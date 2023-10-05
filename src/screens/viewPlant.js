@@ -158,6 +158,7 @@ const PlantForm = ({ navigation }) => {
                     style={styles.image}
                     source={{ uri: item.imageLink }}
                   />
+                  <View style={formData.imageLink && styles.line}></View>
                 </View>
               )}
               keyExtractor={(item, index) => index}
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
   },
   tableRow: {
     flexDirection: "row",
-    marginBottom: 10,
+    marginBottom: 5,
   },
   tableInput: {
     flex: 1,
@@ -279,6 +280,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 8,
     marginRight: 0,
+  },
+  line: {
+    borderBottomWidth: 1,
+    borderBottomColor: "black",
+    marginVertical: 4,
   },
 });
 
