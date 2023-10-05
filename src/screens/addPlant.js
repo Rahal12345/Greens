@@ -36,7 +36,6 @@ const PlantForm = ({ navigation }) => {
     spacesWithinRaws: "",
     spacesBetweenRaws: "",
     seedRate: "",
-    soilDepth: "",
     agronomicPractices: "",
   });
   const [pestTableData, setPestTableData] = useState([]);
@@ -46,6 +45,7 @@ const PlantForm = ({ navigation }) => {
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isUploading, setisUploading] = useState(false);
+  
   const addTableRow = () => {
     setPestTableData((prevData) => [
       ...prevData,
@@ -189,13 +189,6 @@ const PlantForm = ({ navigation }) => {
               placeholder="Seed Rate"
               value={formData.seedRate}
               onChangeText={(value) => handleChange("seedRate", value)}
-            />
-            <Text style={styles.label}>Soil Depth</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Soil Depth"
-              value={formData.soilDepth}
-              onChangeText={(value) => handleChange("soilDepth", value)}
             />
             <Text style={styles.label}>Agronomic Practices</Text>
             <TextInput

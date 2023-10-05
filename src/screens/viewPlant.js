@@ -118,12 +118,6 @@ const PlantForm = ({ navigation }) => {
               placeholder="Seed Rate"
               value={formData.seedRate}
             />
-            <Text style={styles.label}>Soil Depth</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Soil Depth"
-              value={formData.soilDepth}
-            />
             <Text style={styles.label}>Agronomic Practices</Text>
             <TextInput
               style={styles.input}
